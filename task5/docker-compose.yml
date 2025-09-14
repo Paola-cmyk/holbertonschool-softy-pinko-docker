@@ -3,24 +3,39 @@ services:
     build:
       context: ./back-end
       dockerfile: Dockerfile
-    image: softy-pinko-back-end:task4
-    container_name: softy-pinko-back-end-task4
-    ports:
-      - "5252:5252"
-    restart: unless-stopped
+    image: softy-pinko-back-end:task5
+    container_name: softy-pinko-back-end-task5
+    expose:
+      - "5252"
+    networks:
+      - softy-pinko-network
 
   front-end:
     build:
       context: ./front-end
       dockerfile: Dockerfile
-    image: softy-pinko-front-end:task4
-    container_name: softy-pinko-front-end-task4
+    image: softy-pinko-front-end:task5
+    container_name: softy-pinko-front-end-task5
+    expose:
+      - "9000"
+    networks:
+      - softy-pinko-network
+
+  proxy:
+    build:
+      context: ./proxy
+      dockerfile: Dockerfile
+    image: softy-pinko-proxy:task5
+    container_name: softy-pinko-proxy-task5
     ports:
-      - "9000:80"
+      - "80:80"
     depends_on:
       - back-end
-    restart: unless-stopped
+      - front-end
+    networks:
+      - softy-pinko-network
 
 networks:
-  default:
-    name: softy-pinko-network
+  softy-pinko-network:
+    external: true
+
